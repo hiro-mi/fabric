@@ -259,10 +259,21 @@ identities from RCA2. Note that these are administration identities, reflecting
 who can administer these components. So while ORG1 administers the network,
 ORG2.MSP does exist in the network definition.*
 
+*MSPレベル。
+PeerとOrdererのMSPはローカルですが、チャネル（ネットワーク構成チャネルを含む）のMSPはそのチャネルのすべての参加者で共有されます。
+この図では、ネットワーク構成チャネルはORG1によって管理されていますが、別のアプリケーションチャネルはORG1およびORG2によって管理できます。
+ピアはORG2のメンバーであり、ORG2によって管理されますが、ORG1は図のOrdererを管理します。
+ORG1はRCA1のIDを信頼しますが、ORG2はRCA2のIDを信頼します。
+これらは管理IDであり、これらのコンポーネントを誰が管理できるかを反映していることに注意してください。
+そのため、ORG1がネットワークを管理している間、ORG2.MSPはネットワーク定義に存在します。*
+
  * **Network MSP:** The configuration of a network defines who are the
  members in the network --- by defining the MSPs of the participant organizations
  --- as well as which of these members are authorized to perform
  administrative tasks (e.g., creating a channel).
+
+ * **Network MSP：** ネットワークの構成は、参加組織のMSPを定義することにより、ネットワークのメンバーを定義します。
+ また、これらのメンバーの誰が管理タスク（チャネルの作成など）を実行する権限を与えます。
 
  * **Channel MSP:** It is important for a channel to maintain the MSPs of its members
  separately. A channel provides private communications between a particular set of
@@ -275,15 +286,30 @@ ORG2.MSP does exist in the network definition.*
  exist within the scope of what is being administrated (unless the rules have
  been written otherwise --- see the discussion of the `ROLE` attribute below).
 
+ * **Channel MSP：** チャネルがそのメンバーのMSPを個別に維持することが重要です。
+チャネルは、組織の特定のセット間でプライベートな通信を提供し、これを通じて、組織は管理制御を行います。
+そのチャネルのMSPのコンテキストで解釈されるチャネルポリシーは、チャネル上の特定のアクションに参加する権限を持つユーザーを定義します。
+(たとえば、組織の追加やチェーンコードのインスタンス化など)
+チャネルを管理する権限とネットワーク構成チャネル（などの他のチャネルも含む）を管理する機能は、とくに関連しているわけではないことに注意してください。
+管理される権利は、管理されているものの範囲内に存在します。
+（ルールが別の方法で記述されていない限り、以下の`ROLE`属性の説明を参照してください）
+
  * **Peer MSP:** This local MSP is defined on the file system of each peer and there is a
  single MSP instance for each peer. Conceptually, it performs exactly the same function
  as channel MSPs with the restriction that it only applies to the peer where it is defined.
  An example of an action whose authorization is evaluated using the peer's local MSP is
  the installation of a chaincode on the peer.
 
+ * **Peer MSP：** このローカルMSPは各ピアのファイルシステムで定義され、各ピアに単一のMSPインスタンスがあります。
+概念的には、チャネルMSPとまったく同じ機能を実行しますが、それが定義されているピアにのみ適用されるという制限があります。
+ピアのローカルMSPを使用して権限を評価するアクションの例は、ピアへのチェーンコードのインストールです。
+
  * **Orderer MSP:** Like a peer MSP, an orderer local MSP is also defined on the file system
  of the node and only applies to that node. Like peer nodes, orderers are also owned by a single
  organization and therefore have a single MSP to list the actors or nodes it trusts.
+
+ * **Orderer MSP:** Peer MSPと同様に、OrdererのLocal MSPもノードのファイルシステムで定義され、そのノードにのみ適用されます。
+Peer nodeと同様に、Ordererも単一の組織によって所有されているため、Ordererは信頼できるアクターまたはノードをリストアップする単一のMSPを持っています。
 
 ### MSP Structure
 
