@@ -5,6 +5,9 @@ you've seen how a PKI can provide verifiable identities through a chain
 of trust. Now let's see how these identities can be used to represent the
 trusted members of a blockchain network.
 
+[IDに関するドキュメント](../identity/identity.html)を読んでいれば、PKIが信頼のチェーンを通じて検証可能なIDを提供する方法を知っているでしょう。
+次に、これらのIDを使用してブロックチェーンネットワークの信頼できるメンバーを表す方法を見てみましょう。
+
 This is where a **Membership Service** Provider (MSP) comes into play ---
 **it identifies which Root CAs and Intermediate CAs are trusted to define
 the members of a trust domain, e.g., an organization**, either by listing the
@@ -12,11 +15,18 @@ identities of their members, or by identifying which CAs are authorized to
 issue valid identities for their members, or --- as will usually be the case ---
 through a combination of both.
 
+これは、 **メンバーシップサービス** プロバイダー（MSP:Membership Service Provider）が登場するところです。
+MSPは、**組織などの信頼ドメインのメンバーを定義する信頼できるルートCAと中間CAを識別します**。それは、メンバーのIDを一覧表示するか、 どのCAがメンバーに対して有効なIDを発行する権限を与えられているか、（または、よくあることですが）両方の組み合わせを通じて行われます。
+
 The power of an MSP goes beyond simply listing who is a network participant or
 member of a channel. An MSP can identify specific **roles** an actor might play either
 within the scope of the organization the MSP represents (e.g., admins, or as members
 of a sub-organization group), and sets the basis for defining **access privileges**
 in the context of a network and channel (e.g., channel admins, readers, writers).
+
+MSPの機能は、単にネットワーク参加者またはチャネルのメンバーをリストするだけではありません。
+MSPは、アクターがMSPが表す組織の範囲内で果たす特定の役割（管理者、またはサブ組織グループのメンバーなど）を識別します。
+そして、MSPはネットワークおよびチャンネルの文脈でアクセス特権を定義するための基礎を設定します。（チャンネル管理者、リーダー、ライターなど）。
 
 The configuration of an MSP is advertised to all the channels where members of
 the corresponding organization participate (in the form of a **channel MSP**). In
@@ -25,20 +35,35 @@ to authenticate member messages outside the context of a channel and to define t
 permissions over a particular component (who has the ability to install chaincode on
 a peer, for example).
 
+MSPの設定は、対応する組織のメンバーが参加するすべてのチャネルに（ **チャネルMSP** の形式で）通知されます。
+チャネルMSPにくわえて、Peer、Orderer、およびクライアントは **ローカルMSP** を維持します。
+ローカルMSPは、チャネルのコンテキスト外でメンバーメッセージを認証し、特定のコンポーネントに対するパーミッションを定義します（たとえば、ピアにチェーンコードをインストールできる人は誰かということ）。
+
 In addition, an MSP can allow for the identification of a list of identities that
 have been revoked --- as discussed in the [Identity](../identity/identity.html)
 documentation --- but we will talk about how that process also extends to an MSP.
 
+さらに、MSPでは、取り消されたIDのリストを識別できます（[IDのドキュメント](../identity/identity.html)で説明されています）が、
+そのプロセスがMSPにどのように拡張されるかについて説明します。
+
 We'll talk more about local and channel MSPs in a moment. For now let's see what
 MSPs do in general.
 
-### Mapping MSPs to Organizations
+ローカルおよびチャネルMSPについては、後ほど詳しく説明します。 
+ここでは、MSPが一般的に行うことを見てみましょう。
+
+### 組織へのMSPのマッピング
 
 An **organization** is a managed group of members. This can be something as big
 as a multinational corporation or a small as a flower shop. What's most
 important about organizations (or **orgs**) is that they manage their
 members under a single MSP. Note that this is different from the organization
 concept defined in an X.509 certificate, which we'll talk about later.
+
+**組織** は、メンバーの管理グループです。
+これは、多国籍企業のような大きなものでも、フラワーショップのような小さなものでもかまいません。
+組織（または**orgs**）で最も重要なのは、単一のMSPでメンバーを管理することです。
+これは、後で説明するX.509証明書で定義されている組織の概念とは異なることに注意してください。
 
 The exclusive relationship between an organization and its MSP makes it sensible to
 name the MSP after the organization, a convention you'll find adopted in most policy
@@ -51,6 +76,15 @@ multiple MSPs and name them accordingly, e.g., `ORG2-MSP-NATIONAL` and
 `ORG2` in the `NATIONAL` sales channel compared to the `GOVERNMENT` regulatory
 channel.
 
+組織とそのMSPの排他的関係により、組織にちなんでMSPに名前を付けることが賢明です。
+これは、ほとんどのポリシー構成で採用されている慣習です。
+たとえば、組織`ORG1`には、`ORG1-MSP`などのMSPがあります。
+場合によっては、組織が複数のメンバーシップグループを必要とする場合があります。
+たとえば、チャネルが組織間で非常に異なるビジネス機能を実行するために使用される場合です。
+これらの場合、複数のMSPを持ち、それに応じて名前を付けることは理にかなっています
+（例：`ORG2-MSP-NATIONAL`および`ORG2-MSP-GOVERNMENT`のような場合。
+`ORG2`内の`NATIONAL`販売チャネルは`GOVERNMENT`の規制チャネルと比較して異なるメンバーシップのrootsを反映しています。
+
 ![MSP1](./membership.diagram.3.png)
 
 *Two different MSP configurations for an organization. The first configuration shows
@@ -59,7 +93,12 @@ the list of members of an organization. In the second configuration, different M
 are used to represent different organizational groups with national, international,
 and governmental affiliation.*
 
-#### Organizational Units and MSPs
+*組織の2つの異なるMSP設定。
+最初の設定は、MSPと組織の間の一般的な関係を示しています。
+単一のMSPは、組織のメンバーのリストを定義します。 
+2番目の設定では、異なるMSPを使用して、国内、国際、および政府の所属を持つさまざまな組織グループを表します*
+
+#### 組織単位とMSP
 
 An organization is often divided up into multiple **organizational units** (OUs), each
 of which has a certain set of responsibilities. For example, the `ORG1`
@@ -68,10 +107,17 @@ to reflect these separate lines of business. When a CA issues X.509 certificates
 the `OU` field in the certificate specifies the line of business to which the
 identity belongs.
 
+多くの場合、組織は複数の**組織単位**（OUs:organization units）に分割され、各組織単位には特定の責任があります。
+たとえば、`ORG1`組織には`ORG1-MANUFACTURING` OUと`ORG1-DISTRIBUTION` OUの両方があり、これらの個別の事業部門を反映している場合があります。
+CAがX.509証明書を発行する場合、証明書の`OU`フィールドは、IDが属する事業部門を指定します。
+
 We'll see later how OUs can be helpful to control the parts of an organization who
 are considered to be the members of a blockchain network. For example, only
 identities from the `ORG1-MANUFACTURING` OU might be able to access a channel,
 whereas `ORG1-DISTRIBUTION` cannot.
+
+OUがブロックチェーンネットワークのメンバーと見なされる組織の一部を制御するのにどのように役立つかについては、後で説明します。
+たとえば、`ORG1-MANUFACTURING` OUのIDのみがチャネルにアクセスできますが、`ORG1-DISTRIBUTION`はできません。
 
 Finally, though this is a slight misuse of OUs, they can sometimes be used by
 different organizations in a consortium to distinguish each other. In such cases, the
@@ -79,7 +125,11 @@ different organizations use the same Root CAs and Intermediate CAs for their cha
 of trust, but assign the `OU` field to identify members of each organization.
 We'll also see how to configure MSPs to achieve this later.
 
-### Local and Channel MSPs
+最後に、これはOUのわずかな誤用ですが、コンソーシアム内の異なる組織が互いを区別するために使用することがあります。
+そのような場合、異なる組織は、信頼チェーンに同じルートCAと中間CAを使用しますが、`OU`フィールドを割り当てて各組織のメンバーを識別します。
+また、これを実現するためにMSPを構成する方法も確認します。
+
+### ローカルMSP、チャンネルMSP
 
 MSPs appear in two places in a blockchain network: channel configuration
 (**channel MSPs**), and locally on an actor's premise (**local MSP**). **Local MSPs are
@@ -89,9 +139,18 @@ of the users allow the user side to authenticate itself in its transactions as a
 of a channel (e.g. in chaincode transactions), or as the owner of a specific role
 into the system (an org admin, for example, in configuration transactions).
 
+MSPは、ブロックチェーンネットワークの2つの場所に表示されます。
+チャネル設定（**チャネルMSP**）と、アクターの設定（**ローカルMSP**）です。
+**ローカルMSPは、クライアント（ユーザー）およびノード（ピアおよびOrderer）に対して定義されます。**
+ノードのローカルMSPは、そのノードのアクセス許可（ピア管理者など）を定義します。
+ユーザーのローカルMSPにより、ユーザー側は、そのトランザクションでチャネルのメンバー（チェーンコードトランザクションなど）として、またはシステムへの特定のロールの所有者（たとえば設定トランザクションにおける組織管理者）として自身を認証できます。
+
 **Every node and user must have a local MSP defined**, as it defines who has
 administrative or participatory rights at that level (peer admins will not necessarily
 be channel admins, and vice versa).
+
+**すべてのノードとユーザーにはローカルMSPが定義されている必要があります。**
+これにより、誰がどのレベルで管理権限または参加権限を持っているかを定義します。（ピア管理者は必ずしもチャネル管理者であるとは限りません）
 
 In contrast, **channel MSPs define administrative and participatory rights at the
 channel level**. Every organization participating in a channel must have an MSP
@@ -102,8 +161,17 @@ the chain of trust for the organization's members would need to be included in t
 channel configuration. Otherwise transactions originating from this organization's
 identities will be rejected.
 
+対照的に、**チャネルMSPは、チャネルレベルで管理権限と参加権限を定義**します。
+チャネルに参加するすべての組織には、MSPが定義されている必要があります。
+チャンネルのピアと注文者は、すべてチャンネルMSPの同じビューを共有するため、チャンネル参加者を正しく認証できます。
+つまり、組織がチャネルに参加したい場合、組織のメンバーの信頼チェーンを組み込んだMSPをチャネル構成に含める必要があります。
+そうしないと、この組織のIDから発生したトランザクションは拒否されます。
+
 The key difference here between local and channel MSPs is not how they function
 --- both turn identities into roles --- but their **scope**.
+
+ここでのローカルMSPとチャネルMSPの主な違いは、それらがどのように機能するかではありません。
+どちらもIDを役割に変えるものであり、**MSPのスコープ**の違いが重要なのです。
 
 <a name="msp2img"></a>
 
@@ -116,9 +184,18 @@ the channel configuration. For example, the channel of this figure is managed by
 both ORG1 and ORG2. Similar principles apply for the network, orderers, and users,
 but these are not shown here for simplicity.*
 
+*ローカルおよびチャネルMSP。
+各ピアの信頼ドメイン（組織など）は、ピアのローカルMSP（ORG1またはORG2など）によって定義されます。
+チャネル上の組織の表現は、組織のMSPをチャネル構成に追加することにより実現されます。
+たとえば、この図のチャネルは、ORG1とORG2の両方によって管理されています。
+ネットワーク、Orderer、およびユーザーにも同様の原則が適用されますが、簡単にするためにここでは示していません。*
+
 You may find it helpful to see how local and channel MSPs are used by seeing
 what happens when a blockchain administrator installs and instantiates a smart
 contract, as shown in the [diagram above](#msp2img).
+
+[上の図に示すように](#msp2img)、ブロックチェーン管理者がスマートコントラクトをインストールしてインスタンス化するときに何が起こるかを見ると、
+ローカルMSPおよびチャネルMSPがどのように使用されているかを確認すると便利です。
 
 An administrator `B` connects to the peer with an identity issued by `RCA1`
 and stored in their local MSP. When `B` tries to install a smart contract on
@@ -130,6 +207,14 @@ operation, all organizations on the channel must agree to it. Therefore, the
 peer must check the MSPs of the channel before it can successfully commit this
 command. (Other things must happen too, but concentrate on the above for now.)
 
+管理者`B`は、`RCA1`によって発行され、ローカルMSPに保存されたIDでピアに接続します。 
+`B`がピアにスマートコントラクトをインストールしようとすると、ピアはローカルMSP、`ORG1-MSP`をチェックして、`B`のIDが実際に`ORG1`のメンバーであることを確認します。
+検証が成功すると、インストールコマンドが正常に完了します。
+その後、`B`は、チャネルでスマートコントラクトをインスタンス化したいと考えています。
+これはチャネル操作であるため、チャネル上のすべての組織がそれに同意する必要があります。
+したがって、ピアはこのコマンドを正常にコミットする前に、チャネルのMSPを確認する必要があります。
+（他のことも起こりますが、今のところは上記に集中してください。）
+
 **Local MSPs are only defined on the file system of the node or user** to which
 they apply. Therefore, physically and logically there is only one local MSP per
 node or user. However, as channel MSPs are available to all nodes in the
@@ -138,6 +223,12 @@ channel, they are logically defined once in the channel configuration. However,
 channel and kept synchronized via consensus**. So while there is a copy of each
 channel MSP on the local file system of every node, logically a channel MSP
 resides on and is maintained by the channel or the network.
+
+**ローカルMSPは、それらが適用されるノードまたはユーザーのファイルシステムでのみ定義されます。**
+したがって、物理的および論理的には、ノードまたはユーザーごとに1つのローカルMSPのみが存在します。
+ただし、チャネルMSPはチャネル内のすべてのノードで使用できるため、チャネル設定で一度論理的に定義されます。
+**ただし、チャネルMSPは、チャネル内のすべてのノードのファイルシステムでもインスタンス化され、コンセンサスを介して同期が維持されます。**
+そのため、すべてのノードのローカルファイルシステムに各チャネルMSPのコピーがありますが、論理的にはチャネルMSPはチャネルまたはネットワークに存在し、維持されます。
 
 ### MSP Levels
 
