@@ -242,6 +242,11 @@ identity for the administration of private resources**. MSPs are mandatory
 at every level of administration --- they must be defined for the network,
 channel, peer, orderer, and users.
 
+チャネルMSPとローカルMSPが分割されていることは、ローカルリソース（ピアまたはOrdererノードなど）と、チャネルリソース（チャネルまたはネットワークレベルで動作する台帳、スマートコントラクト、コンソーシアムなど）を管理する組織のニーズを反映しています。
+これらのMSPが異なる **レベル** にあると考えると便利です。
+**上位レベルのMSPはネットワーク管理の懸念に関連し、下位レベルのMSPは、プライベートリソースの管理のためにIDを取り扱います**。
+MSPは、管理のすべてのレベルで必須です。MSPは、ネットワーク、チャネル、ピア、Orderer、およびユーザーに対して定義する必要があります。
+
 ![MSP3](./membership.diagram.2.png)
 
 *MSP Levels. The MSPs for the peer and orderer are local, whereas the MSPs for a
