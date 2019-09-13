@@ -9,6 +9,11 @@ encapsulated in an X.509 digital certificate. These identities really matter
 because they **determine the exact permissions over resources and access to
 information that actors have in a blockchain network.**
 
+ブロックチェーンネットワークのさまざまなアクターには、ピア、注文者、クライアントアプリケーション、管理者などが含まれます。
+これらの各アクター（サービスを消費できるネットワークの内部または外部のアクティブな要素）には、X.509デジタル証明書にカプセル化されたデジタルIDがあります。
+これらのIDは、**リソースに対する正確な許可と、アクターがブロックチェーンネットワーク内で持っている情報へのアクセスを決定するため**、とてもに重要です。
+
+
 A digital identity furthermore has some additional attributes that Fabric uses
 to determine permissions, and it gives the union of an identity and the associated
 attributes a special name --- **principal**. Principals are just like userIDs or
@@ -16,6 +21,10 @@ groupIDs, but a little more flexible because they can include a wide range of
 properties of an actor's identity, such as the actor's organization, organizational
 unit, role or even the actor's specific identity. When we talk about principals,
 they are the properties which determine their permissions.
+
+さらに、デジタルIDには、Fabricがアクセス許可を決定するために使用するいくつかの追加属性があり、IDと関連属性の結合に特別な名前**「プリンシパル」**を与えます。
+プリンシパルは、ユーザーIDまたはグループIDに似ていますが、アクターの組織、組織単位、役割、またはアクターの特定のアイデンティティなど、アクターのアイデンティティの幅広いプロパティを含めることができるため、もう少し柔軟です。
+ここでプリンシパルについて話すときは、パーミッションを決定するプロパティとします。
 
 For an identity to be **verifiable**, it must come from a **trusted** authority.
 A [membership service provider](../membership/membership.html)
@@ -25,6 +34,11 @@ The default MSP implementation in Fabric uses X.509 certificates as identities,
 adopting a traditional Public Key Infrastructure (PKI) hierarchical model (more
 on PKI later).
 
+IDを**検証可能にする**には、**信頼できる機関**から取得する必要があります。
+[メンバーシップサービスプロバイダー](../membership/membership.html)（MSP:Membership Service Provider）は、Fabricでこれを実現する方法です。
+より具体的には、MSPは、この組織の有効なIDを管理するルールを定義するコンポーネントです。
+FabricのデフォルトのMSP実装では、X.509証明書をIDとして使用し、従来の公開鍵暗号基盤（PKI）階層モデルを採用しています（PKIについては後ほど説明します）。
+
 ## A Simple Scenario to Explain the Use of an Identity
 
 Imagine that you visit a supermarket to buy some groceries. At the checkout you see
@@ -33,12 +47,22 @@ pay with a different card --- let's call it an "ImagineCard" --- it doesn't matt
 the card is authentic and you have sufficient funds in your account. It will be not be
 accepted.
 
+スーパーに行って食料品を買うと想像してください。
+チェックアウト時に、Visa、Mastercard、AMEXカードのみが受け入れられるというサインが表示されます。
+別のカードで支払いをしようとする場合（「ImagineCard」と呼びましょう）、カードが本物であり、アカウントに十分な資金があるかどうかは関係ありません。 
+支払いは受け入れられないでしょう。
+
 ![Scenario](./identity.diagram.6.png)
 
 *Having a valid credit card is not enough --- it must also be accepted by the store! PKIs
 and MSPs work together in the same way --- a PKI provides a list of identities,
 and an MSP says which of these are members of a given organization that participates in
 the network.*
+
+*有効なクレジットカードを持っているだけでは十分ではありません。
+ストアで承認する必要もあります。 
+PKIとMSPは同じように連携します。
+PKIはIDのリストを提供し、MSPはこれらのどれがネットワークに参加する特定の組織のメンバーであるかを示します。*
 
 PKI certificate authorities and MSPs provide a similar combination of functionalities.
 A PKI is like a card provider --- it dispenses many different types of verifiable
@@ -49,12 +73,23 @@ of a blockchain network**.
 
 Let's drill into these concepts in a little more detail.
 
+PKI認証局とMSPは、同様の機能の組み合わせを提供します。
+PKIはカードプロバイダーのようなもので、さまざまな種類の検証可能なIDを発行します。
+一方、MSPは、店舗が受け入れるカードプロバイダーのリストのようなもので、どのIDが店舗決済ネットワークの信頼できるメンバー（アクター）であるかを判断します。
+**MSPは、検証可能なIDをブロックチェーンネットワークのメンバーに変えます。**
+
+これらの概念をもう少し詳しく見ていきましょう。
+
 ## What are PKIs?
 
 **A public key infrastructure (PKI) is a collection of internet technologies that provides
 secure communications in a network.** It's PKI that puts the **S** in **HTTPS** --- and if
 you're reading this documentation on a web browser, you're probably using a PKI to make
 sure it comes from a verified source.
+
+**公開鍵暗号基盤（PKI）は、ネットワークで安全な通信を提供するインターネット技術の集まりです。 **
+**HTTPS**を**S**の状態にするのはPKIです。
+このドキュメントをWebブラウザーで読んでいる場合は、PKIを使用して、検証済みのソースからのものであることを確認している可能性があります。
 
 ![PKI](./identity.diagram.7.png)
 
@@ -65,6 +100,8 @@ with their environment. A CA's Certificate Revocation List (CRL) constitutes a r
 for the certificates that are no longer valid. Revocation of a certificate can happen for
 a number of reasons. For example, a certificate may be revoked because the cryptographic
 private material associated to the certificate has been exposed.*
+
+
 
 Although a blockchain network is more than a communications network, it relies on the
 PKI standard to ensure secure communication between various network participants, and to
