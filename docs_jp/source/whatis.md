@@ -6,6 +6,11 @@ of the ledger by applying transactions that have been validated by a _consensus
 protocol_, grouped into blocks that include a hash that bind each block to the
 preceding block.
 
+
+一般的に、ブロックチェーンは不変のトランザクション台帳であり、 _ピアノード群_ の分散ネットワーク内で維持されます。 
+これらのノードはそれぞれ、各ブロックを前のブロックにバインドするハッシュを含むブロックにグループ化された
+_コンセンサスプロトコル_ によって検証されたトランザクションを適用することにより、台帳のコピーを維持します。
+
 The first and most widely recognized application of blockchain is the
 [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin) cryptocurrency, though others
 have followed in its footsteps. Ethereum, an alternative cryptocurrency, took a
@@ -14,6 +19,11 @@ adding _smart contracts_ to create a platform for distributed applications.
 Bitcoin and Ethereum fall into a class of blockchain that we would classify as
 _public permissionless_ blockchain technology.  Basically, these are public
 networks, open to anyone, where participants interact anonymously.
+
+ブロックチェーンの最初で最も広く知られているアプリケーションは[ビットコイン](https://ja.wikipedia.org/wiki/%E3%83%93%E3%83%83%E3%83%88%E3%82%B3%E3%82%A4%E3%83%B3)暗号通貨ですが、他のものもその足跡をたどっています。 
+代替の暗号通貨であるイーサリアムは、ビットコインと同じ特徴の多くを統合するが、スマートコントラクトを追加して分散アプリケーション用のプラットフォームを作成する、異なるアプローチを取りました。
+ビットコインとイーサリアムは、 _パブリック型のパーミッションレス_ ブロックチェーン技術として分類されるブロックチェーンのクラスに分類されます。
+基本的に、これらは誰でも参加できる公開ネットワークであり、参加者は匿名でやり取りします。
 
 As the popularity of Bitcoin, Ethereum and a few other derivative technologies
 grew, interest in applying the underlying technology of the blockchain,
@@ -25,6 +35,13 @@ the participants is a hard requirement, such as in the case of financial
 transactions where Know-Your-Customer (KYC) and Anti-Money Laundering (AML)
 regulations must be followed.
 
+ビットコイン、イーサリアム、およびその他のいくつかの派生技術の人気が高まるにつれて、
+ブロックチェーン、分散型台帳、および分散型アプリケーションプラットフォームの基盤となる技術を
+より革新的な _エンタープライズ用途_ に適用することへの関心も高まりました。 
+ただし、多くの企業のユースケースでは、許可なしのブロックチェーンテクノロジーでは（現在）提供できないパフォーマンス特性が必要です。
+さらに、多くのユースケースでは、参加者の身元は厳しい要件です。
+たとえば、本人確認（KYC:Know-Your-Customer)およびアンチマネーロンダリング（AML:Anti-Money Laundering）規制に従う必要がある金融取引の場合などです。
+
 For enterprise use, we need to consider the following requirements:
 
 - Participants must be identified/identifiable
@@ -34,11 +51,24 @@ For enterprise use, we need to consider the following requirements:
 - Privacy and confidentiality of transactions and data pertaining to business
   transactions
 
+エンタープライズで使用するには、次の要件を考慮する必要があります。
+
+- 参加者は特定/特定可能でなければなりません
+- ネットワークに参加するためには _許可(Permission)_ が必要
+- 高いトランザクションスループットパフォーマンス
+- トランザクション確認の遅延が少ないこと
+- 商取引に関連するトランザクションおよびデータのプライバシーと機密性
+
 While many early blockchain platforms are currently being _adapted_ for
 enterprise use, Hyperledger Fabric has been _designed_ for enterprise use from
 the outset. The following sections describe how Hyperledger Fabric (Fabric)
 differentiates itself from other blockchain platforms and describes some of the
 motivation for its architectural decisions.
+
+初期の多くのブロックチェーンプラットフォームは現在、 _企業での使用に適合_ していますが、
+Hyperledger Fabricは最初から _企業での使用を目的として設計_ されています。 
+以下のセクションでは、Hyperledger Fabric（Fabric）が他のブロックチェーンプラットフォームとどのように差別化されるかを説明し、
+アーキテクチャの決定の動機について説明します。
 
 ## Hyperledger Fabric
 

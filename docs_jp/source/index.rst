@@ -6,6 +6,9 @@ A Blockchain Platform for the Enterprise
 Enterprise grade permissioned distributed ledger platform that offers
 modularity and versatility for a broad set of industry use cases.
 
+幅広い業界のユースケースにモジュール性と汎用性を提供する
+エンタープライズ用途のパーミッション型分散台帳プラットフォーム。
+
 .. raw:: html
 
    <br/><br/>
@@ -34,6 +37,9 @@ modularity and versatility for a broad set of industry use cases.
 .. note:: If you have questions not addressed by this documentation, or run into
           issues with any of the tutorials, please visit the :doc:`questions`
           page for some tips on where to find additional help.
+          
+          このドキュメントで扱われていない質問がある場合、またはチュートリアルのいずれかで問題が発生した場合は、
+          :doc:`questions` をご覧ください。 
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
