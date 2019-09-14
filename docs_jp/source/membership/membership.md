@@ -311,12 +311,15 @@ ORG1はRCA1のIDを信頼しますが、ORG2はRCA2のIDを信頼します。
  * **Orderer MSP:** Peer MSPと同様に、OrdererのLocal MSPもノードのファイルシステムで定義され、そのノードにのみ適用されます。
 Peer nodeと同様に、Ordererも単一の組織によって所有されているため、Ordererは信頼できるアクターまたはノードをリストアップする単一のMSPを持っています。
 
-### MSP Structure
+### MSPの構造
 
 So far, you've seen that the most important element of an MSP are the specification
 of the root or intermediate CAs that are used to establish an actor's or node's
 membership in the respective organization. There are, however, more elements that are
 used in conjunction with these two to assist with membership functions.
+
+これまで、MSPの最も重要な要素は、それぞれの組織でアクターまたはノードのメンバーシップを確立するために使用されるルートCAまたは中間CAの仕様であることがわかりました。
+ただし、これらの2つと組み合わせて使用して、メンバーシップ機能を支援する要素がさらにあります。
 
 ![MSP4](./membership.diagram.5.png)
 
@@ -324,11 +327,20 @@ used in conjunction with these two to assist with membership functions.
 channel MSPs are not physically structured in exactly this way, it's still a helpful
 way to think about them.*
 
+*上の図は、ローカルMSPが、どのようにローカルファイルシステムに保存されるかを示しています。
+チャネルMSPは、このように物理的に構造化されていませんが、チャネルMSPについて考えるのに役立ちます。*
+
 As you can see, there are nine elements to an MSP. It's easiest to think of these elements
 in a directory structure, where the MSP name is the root folder name with each
 subfolder representing different elements of an MSP configuration.
 
+ご覧のとおり、MSPには9つの要素があります。 
+これらの要素はディレクトリ構造で考えるのが最も簡単です。
+MSP名はルートフォルダ名で、各サブフォルダはMSP構成の異なる要素を表します。
+
 Let's describe these folders in a little more detail and see why they are important.
+
+これらのフォルダについてもう少し詳しく説明し、それらが重要である理由を見てみましょう。
 
 * **Root CAs:** This folder contains a list of self-signed X.509 certificates of
   the Root CAs trusted by the organization represented by this MSP.
@@ -337,6 +349,11 @@ Let's describe these folders in a little more detail and see why they are import
   This is the most important folder because it identifies the CAs from
   which all other certificates must be derived to be considered members of the
   corresponding organization.
+
+* **Root CAs:** このフォルダーには、MSPによって表される組織によって信頼されているルートCAの自己署名X.509証明書のリストが含まれています。
+  このMSPフォルダーには、少なくとも1つのルートCA X.509証明書が必要です。
+
+  これは、対応する組織のメンバーと見なされるために他のすべての証明書を取得する必要があるCAを識別するため、最も重要なフォルダーです。
 
 
 * **Intermediate CAs:** This folder contains a list of X.509 certificates of the
@@ -356,6 +373,17 @@ Let's describe these folders in a little more detail and see why they are import
   Like the Root CA folder, this folder defines the CAs from which certificates must be
   issued to be considered members of the organization.
 
+* **Intermediate CAs:** このフォルダーには、この組織によって信頼されている中間CAのX.509証明書のリストが含まれています。 
+  各証明書は、MSPのルートCAの1つ、または信頼されたルートCAとチェーンでつながっている中間CAによって、署名される必要があります。
+
+  中間CAは、組織の別の下位区分（`ORG1`の`ORG1-MANUFACTURING`および`ORG1-DISTRIBUTION`のように）または組織自体（商用CAが組織のID管理に活用される場合など）を表す場合があります。 
+  後者の場合、中間CAを使用して組織の下位区分を表すことができます。 
+  [ここでは、MSP設定のベストプラクティスに関する詳細情報を見つけることができます。](../msp.html) 
+  中間CAがないネットワークが機能している可能性があることに注意してください。
+  この場合、このフォルダーは空になります。
+
+  ルートCAフォルダーと同様に、このフォルダーは、組織のメンバーと見なされるために証明書を発行する必要があるCAを定義します。
+
 
 * **Organizational Units (OUs):** These are listed in the `$FABRIC_CFG_PATH/msp/config.yaml`
   file and contain a list of organizational units, whose members are considered
@@ -367,6 +395,12 @@ Let's describe these folders in a little more detail and see why they are import
   Specifying OUs is optional. If no OUs are listed, all the identities that are part of
   an MSP --- as identified by the Root CA and Intermediate CA folders --- will be considered
   members of the organization.
+
+* **Organizational Units (OUs):** これらは`$FABRIC_CFG_PATH/msp/config.yaml`ファイルに一覧で記載され、このMSPによって表される組織の一部であると考えられる組織単位のリストが含まれています。
+  これは、組織のメンバーを、特定のOUを持つID（MSP指定CAのいずれかによって署名された）を保持するメンバーに制限する場合に特に役立ちます。
+
+  OUの指定はオプションです。
+  OUがリストされていない場合、MSPの一部であるすべてのID（ルートCAおよび中間CAフォルダーによって識別される）は、組織のメンバーと見なされます。
 
 
 * **Administrators:** This folder contains a list of identities that define the
@@ -391,6 +425,19 @@ Let's describe these folders in a little more detail and see why they are import
   (or certain organizations) permission to perform certain channel functions (such as
   instantiating chaincode). In this way, an organizational role can confer a network role.
 
+* **Administrators:** このフォルダーには、この組織の管理者の役割を持つアクターを定義するIDのリストが含まれています。
+  標準のMSPタイプの場合、このリストには1つ以上のX.509証明書が必要です。
+
+  アクターが管理者の役割を持っているからといって、特定のリソースを管理できるわけではないことに注意してください。システムの管理に関して特定のIDが持つ実際の能力は、システムリソースを管理するポリシーによって決まります。
+  たとえば、チャネルポリシーでは、`ORG1-MANUFACTURING`管理者には新しい組織をチャネルに追加する権限があり、`ORG1-DISTRIBUTION`管理者にはそのような権限がないことを指定できます。
+
+  X.509証明書には`ROLE`属性（アクターが`admin`であることを指定するなど）がありますが、これはブロックチェーンネットワークではなく組織内のアクターの役割を指します。
+  これは、`OU`属性の目的に似ています。定義されている場合は、組織内のアクターの場所を指します。
+
+ `ROLE`属性を使用してチャネルレベルで管理者権限を付与できます。
+ それは、そのチャネルのポリシーが、特定の組織（または複数の組織）の管理者が、特定のチャネル機能（チェーンコードのインスタンス化など）を実行できるように、記述されているような場合となります。
+  このようにして、組織の役割により、ネットワークの役割を付与できます。
+
 
 * **Revoked Certificates:** If the identity of an actor has been revoked,
   identifying information about the identity --- not the identity itself --- is held
@@ -406,6 +453,16 @@ Let's describe these folders in a little more detail and see why they are import
   as issued by. This "list of lists" is optional. It will only become populated
   as certificates are revoked.
 
+* **Revoked Certificates:** アクターのIDが取り消された場合、ID自体ではなくIDに関する識別情報がこのフォルダーに保持されます。
+  X.509ベースのIDの場合、これらの識別子はサブジェクトキー識別子（SKI）と機関アクセス識別子（AKI）として知られる文字列のペアです。
+  X.509証明書を使用するたびにチェックされ、証明書が失効していないことが確認されます。
+
+  このリストは、概念的にはCAの証明書失効リスト（CRL:Certificate Revocation List）と同じですが、組織からのメンバーシップの失効にも関連しています。
+  結果として、ローカルまたはチャネルのMSPの管理者は、発行された失効証明書をCAの更新されたCRLに通知することにより、アクターまたはノードを組織から迅速に失効させることができます。
+  この「リストのリスト（CAのCRLに通知するためのCRL）」はオプションです。
+  証明書が取り消されると、データが入力されます。
+  
+
 
 * **Node Identity:** This folder contains the identity of the node, i.e.,
   cryptographic material that --- in combination to the content of `KeyStore` --- would
@@ -418,6 +475,14 @@ Let's describe these folders in a little more detail and see why they are import
 
   This folder is mandatory for local MSPs, and there must be exactly one X.509 certificate
   for the node. It is not used for channel MSPs.
+  
+* **Node Identity:** このフォルダーには、ノードのIDが含まれています。
+  つまり、これは暗号化された何かしらのもので、`KeyStore`のコンテンツと組み合わせ、ノードがチャネルおよびネットワークの他の参加者に送信されるメッセージで自身を認証できるようなものです。
+  X.509ベースのIDの場合、このフォルダーには**X.509証明書**が含まれています。
+  これは、たとえば、ピアが承認したことを示すためにピアがtransaction proposal responseに入れる証明書であり、検証時に結果のトランザクションのendorsement policyと照合して確認できます。
+
+  このフォルダーはローカルMSPに必須であり、ノードに対して1つのX.509証明書が必要です。
+  チャネルMSPには使用されません。
 
 
 * **`KeyStore` for Private Key:** This folder is defined for the local MSP of a peer or
@@ -433,6 +498,16 @@ Let's describe these folders in a little more detail and see why they are import
   Configuration of a **channel MSPs** does not include this folder, as channel MSPs
   solely aim to offer identity validation functionalities and not signing abilities.
 
+* **`KeyStore` for Private Key:** このフォルダーは、ピアまたは注文者ノードのローカルMSP（またはクライアントのローカルMSP）に対して定義され、ノードの**署名キー（秘密鍵）**が含まれます。
+  このキーは、**ノードID**フォルダーに含まれるノードのIDと暗号的に一致し、データの署名に使用されます。
+  たとえば、endorsement phaseの一部として、transaction proposal responseに署名するために使用されます。
+
+  このフォルダーはローカルMSPに必須であり、秘密鍵を1つだけ含める必要があります。
+  明らかに、このフォルダーへのアクセスは、ピアの管理責任を持つユーザーのIDのみに制限する必要があります。
+
+  **チャネルMSP**の構成にはこのフォルダーは含まれません。
+  それは、チャネルMSPは署名機能ではなくID検証機能を提供することのみを目的としているためです。
+
 
 * **TLS Root CA:** This folder contains a list of self-signed X.509 certificates of the
   Root CAs trusted by this organization **for TLS communications**. An example of a TLS
@@ -445,6 +520,13 @@ Let's describe these folders in a little more detail and see why they are import
 
   There must be at least one TLS Root CA X.509 certificate in this folder.
 
+* **TLS Root CA:** このフォルダーには、この組織によって信頼されているルートCAの自己署名X.509証明書のリストが含まれおり、**TLS通信のために利用されます**。
+  TLS通信の例としては、PeerがOrdererに接続して台帳の更新を受信できるようにする必要があるような場合です。
+
+  MSP TLS情報は、ネットワーク内のノードに関連しています。つまり、ネットワークを消費するアプリケーションや管理ではなく、PeerとOrdererです。
+
+  このフォルダーには、少なくとも1つのTLSルートCA X.509証明書が必要です。
+
 
 * **TLS Intermediate CA:** This folder contains a list intermediate CA certificates
   CAs trusted by the organization represented by this MSP **for TLS communications**.
@@ -452,13 +534,24 @@ Let's describe these folders in a little more detail and see why they are import
   organization. Similar to membership intermediate CAs, specifying intermediate TLS CAs is
   optional.
 
+* **TLS Intermediate CA:** このフォルダーには、中間CA証明書のリストが含まれています。
+  CAはこのMSPによって表される組織によって信頼されており、**TLS通信のために利用されます**。
+  このフォルダーは、組織のTLS証明書に商用CAが使用される場合に特に役立ちます。
+  メンバーシップ中間CAと同様に、中間TLS CAの指定はオプションです。
+  
   For more information about TLS, click [here](../enable_tls.html).
-
+  
+  TLSの詳細については、[ここをクリックしてください](../enable_tls.html)。
+  
 If you've read this doc as well as our doc on [Identity](../identity/identity.html)), you
 should have a pretty good grasp of how identities and membership work in Hyperledger Fabric.
 You've seen how a PKI and MSPs are used to identify the actors collaborating in a blockchain
 network. You've learned how certificates, public/private keys, and roots of trust work,
 in addition to how MSPs are physically and logically structured.
+
+このドキュメントと[IDに関するドキュメント](../identity/identity.html)を読んだことがある場合は、Hyperledger FabricでIDとメンバーシップがどのように機能するかを十分に把握しているはずです。
+PKIとMSPを使用して、ブロックチェーンネットワークで協力しているアクターを識別する方法を見てきました。
+MSPの物理的および論理的な構造に加えて、証明書、公開/秘密鍵、および信頼のルートの仕組みを学びました。
 
 <!---
 Licensed under Creative Commons Attribution 4.0 International License https://creativecommons.org/licenses/by/4.0/
