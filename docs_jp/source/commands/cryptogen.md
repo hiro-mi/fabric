@@ -1,12 +1,10 @@
 # cryptogen
 
-`cryptogen` is an utility for generating Hyperledger Fabric key material.
-It is provided as a means of preconfiguring a network for testing purposes.
-It would normally not be used in the operation of a production network.
+`cryptogen` Hyperledger Fabric の鍵ファイル群を生成するためのユーティリティです。
+テスト目的でネットワークを事前設定する手段として提供されます。
+通常、実稼働ネットワークの運用では使用されません。## Syntax
 
-## Syntax
-
-The ``cryptogen`` command has five subcommands, as follows:
+``cryptogen`` コマンドには、次の5つのサブコマンドがあります。
 
   * help
   * generate
@@ -63,7 +61,7 @@ Flags:
 ```
 usage: cryptogen showtemplate
 
-Show the default configuration template
+デフォルトの構成テンプレートを表示する
 
 Flags:
   --help  Show context-sensitive help (also try --help-long and --help-man).
@@ -75,7 +73,7 @@ Flags:
 ```
 usage: cryptogen extend [<flags>]
 
-Extend existing network
+既存のネットワークを拡張する
 
 Flags:
   --help                   Show context-sensitive help (also try --help-long and
@@ -90,7 +88,7 @@ Flags:
 ```
 usage: cryptogen version
 
-Show version information
+バージョン情報を表示する
 
 Flags:
   --help  Show context-sensitive help (also try --help-long and --help-man).
@@ -99,8 +97,7 @@ Flags:
 
 ## Usage
 
-Here's an example using the different available flags on the ``cryptogen extend``
-command.
+``cryptogen extend`` コマンドで使用可能なさまざまなフラグを使用した例を次に示します。
 
 ```
     cryptogen extend --input="crypto-config" --config=config.yaml
@@ -108,6 +105,6 @@ command.
     org3.example.com
 ```
 
-Where config.yaml adds a new peer organization called ``org3.example.com``
+config.yamlは、 ``org3.example.com`` という新しいピア組織を追加します。
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
