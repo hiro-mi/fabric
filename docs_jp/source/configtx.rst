@@ -6,6 +6,9 @@ stored in a collection configuration transactions, one per channel. Each
 configuration transaction is usually referred to by the shorter name
 *configtx*.
 
+Hyperledger Fabricブロックチェーンネットワークの共有構成は、チャネルごとに1つのコレクション構成トランザクションに保存されます。  
+各構成トランザクションは通常、短い名前 *configtx* で参照されます。
+
 Channel configuration has the following important properties:
 
 1. **Versioned**: All elements of the configuration have an associated
@@ -20,6 +23,15 @@ Channel configuration has the following important properties:
    each group of the hierarchy has associated values and policies. These
    policies can take advantage of the hierarchy to derive policies at
    one level from policies of lower levels.
+   
+チャネル構成には、次の重要なプロパティがあります。
+
+1. **バージョン付き** ： 構成のすべての要素には、すべての変更で拡張される関連バージョンがあります。  
+   さらに、コミットされたすべての構成はシーケンス番号を受け取ります。
+2. **許可** ： 構成の各要素には、その要素の変更を許可するかどうかを管理するポリシーが関連付けられています。 　
+   以前のconfigtxのコピー（および追加情報なし）を持っている人は、これらのポリシーに基づいて新しい構成の有効性を検証できます。
+3. **階層** ： ルート構成グループにはサブグループが含まれ、階層の各グループには値とポリシーが関連付けられています。  
+   これらのポリシーは階層を利用して、下位レベルのポリシーから1つのレベルのポリシーを導出できます。
 
 Anatomy of a configuration
 --------------------------
@@ -34,6 +46,13 @@ The proto structures for configuration are stored in
 ``HeaderType_CONFIG`` encodes a ``ConfigEnvelope`` message as the
 ``Payload`` ``data`` field. The proto for ``ConfigEnvelope`` is defined
 as follows:
+
+構成は、他のトランザクションのないブロックに ``HeaderType_CONFIG`` タイプのトランザクションとして保存されます。  
+これらのブロックは *構成ブロック* と呼ばれ、最初のブロックは *ジェネシスブロック* と呼ばれます。
+
+設定用のプロト構造は ``fabric/protos/common/configtx.proto`` に保存されます。  
+``HeaderType_CONFIG`` タイプの枠は、 ``ConfigEnvelope`` メッセージを ``Payload`` ``data`` フィールドとしてエンコードします。  
+``ConfigEnvelope`` のプロトタイプは次のように定義されます：
 
 ::
 
